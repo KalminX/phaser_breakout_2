@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Gamedev Phaser Workshop - Lesson 01: Initialize the Framework</title>
+    <title>Breakout</title>
     <style>
         * {
             padding: 0;
@@ -31,10 +31,10 @@
         let scoreText;
         let livesText;
         let lifeLostText;
-        let textStyle = { font: "18px Arial", fill: "#0095DD" };
-        let playing = false;
         let startButton;
+        let playing = false;
 
+        const textStyle = { font: "18px Arial", fill: "#0095DD" };
 
         function preload() {
             game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -46,16 +46,7 @@
             game.load.image("brick", "img/brick.png");
             game.load.spritesheet("ball", "img/wobble.png", 20, 20);
             game.load.spritesheet("button", "img/button.png", 120, 40);
-
-
         }
-
-        function startGame() {
-            startButton.destroy();
-            ball.body.velocity.set(150, -150);
-            playing = true;
-        }
-
 
         function create() {
             game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -64,7 +55,6 @@
             // Ball
             ball = game.add.sprite(50, 250, "ball");
             ball.animations.add("wobble", [0, 1, 0, 2, 0, 1, 0, 2, 0], 24);
-
             ball.anchor.set(0.5);
             game.physics.enable(ball, Phaser.Physics.ARCADE);
             ball.body.collideWorldBounds = true;
@@ -81,7 +71,7 @@
             // Bricks
             initBricks();
 
-            // UI Texts
+            // UI
             scoreText = game.add.text(5, 5, "Points: 0", textStyle);
 
             livesText = game.add.text(game.world.width - 5, 5, `Lives: ${lives}`, textStyle);
@@ -95,6 +85,7 @@
             );
             lifeLostText.anchor.set(0.5);
             lifeLostText.visible = false;
+
             startButton = game.add.button(
                 game.world.width * 0.5,
                 game.world.height * 0.5,
@@ -103,27 +94,30 @@
                 this,
                 1,
                 0,
-                2,
+                2
             );
             startButton.anchor.set(0.5);
-
         }
 
         function update() {
             game.physics.arcade.collide(ball, paddle, ballHitPaddle);
             game.physics.arcade.collide(ball, bricks, ballHitBrick);
+
             if (playing) {
                 paddle.x = game.input.x || game.world.width * 0.5;
             }
         }
 
+        function startGame() {
+            startButton.destroy();
+            ball.body.velocity.set(150, -150);
+            playing = true;
+        }
 
-    function ballHitPaddle(ball, paddle) {
-        ball.animations.play("wobble");
-        ball.body.velocity.x = -5 * (paddle.x - ball.x);
-    }
-
-
+        function ballHitPaddle(ball, paddle) {
+            ball.animations.play("wobble");
+            ball.body.velocity.x = -5 * (paddle.x - ball.x);
+        }
 
         function initBricks() {
             brickInfo = {
@@ -153,10 +147,9 @@
         function ballHitBrick(ball, brick) {
             const killTween = game.add.tween(brick.scale);
             killTween.to({ x: 0, y: 0 }, 200, Phaser.Easing.Linear.None);
-            killTween.onComplete.addOnce(() => {
-                brick.kill();
-            }, this);
+            killTween.onComplete.addOnce(() => brick.kill(), this);
             killTween.start();
+
             score += 10;
             scoreText.setText(`Points: ${score}`);
 
