@@ -4,6 +4,9 @@ A basic Brick Breaker (Breakout-style) game built using the [Phaser](https://pha
 
 ---
 
+## Try it out
+[Breakout](https://kal-breakout-2.netlify.app/)
+
 ## 🚀 Features
 
 * Ball and paddle mechanics
